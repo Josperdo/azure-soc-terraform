@@ -1,4 +1,4 @@
-# Multi-Cloud SOC Lab — Infrastructure as Code
+# Cloud Security Operations Lab Infrastructure
 
 ![Terraform CI](https://github.com/Josperdo/azure-soc-terraform/actions/workflows/terraform-ci.yml/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Josperdo/azure-soc-terraform/blob/main/LICENSE)
