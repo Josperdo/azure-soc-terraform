@@ -1,4 +1,4 @@
-# Multi-Cloud SOC Lab — Infrastructure as Code
+# Cloud Security Operations Lab Infrastructure
 
 ![Terraform CI](https://github.com/Josperdo/azure-soc-terraform/actions/workflows/terraform-ci.yml/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Josperdo/azure-soc-terraform/blob/main/LICENSE)
@@ -180,6 +180,19 @@ sudo apt install make          # Linux
 
 ## Quick Start
 
+**Azure** ships two tfvars profiles — pick whichever matches your account:
+
+| Profile | File | Use when |
+|---|---|---|
+| Free trial | `terraform.tfvars.example` | New account, stretching free trial credit |
+| Pay-as-you-go | `terraform.tfvars.payg.example` | Fully-activated account, not optimizing for trial credit |
+
+The PAYG profile enables Standard-SKU Bastion (native client + IP-based
+connect) and longer log retention by default — see
+[Cost Estimate](#cost-estimate) for the delta. Both are plain `cp` swaps into
+`terraform.tfvars`; nothing else changes. (An AWS pay-as-you-go profile is in
+progress and not yet available.)
+
 ### Azure
 
 ```bash
@@ -192,13 +205,19 @@ ssh-keygen -t rsa -b 4096 -f ~/.ssh/azure_soc_key
 
 # 3. Configure variables
 cd environments/azure
-cp terraform.tfvars.example terraform.tfvars
+cp terraform.tfvars.example terraform.tfvars       # free trial profile
+# cp terraform.tfvars.payg.example terraform.tfvars  # or: pay-as-you-go profile
 # Edit terraform.tfvars — set subscription_id and admin_ssh_public_key
 
 # 4. Deploy
 make deploy target=azure
 
-# 5. Connect — Azure Portal → Resource Group → VM → Connect → Bastion
+# 5. Connect
+#    Basic SKU:    Azure Portal → Resource Group → VM → Connect → Bastion
+#    Standard SKU: az network bastion ssh --name <bastion-name> --resource-group <rg-name> \
+#                    --target-resource-id <vm-resource-id> --auth-type ssh-key \
+#                    --username azureadmin --ssh-key ~/.ssh/azure_soc_key
+#    (requires: az extension add -n ssh)
 
 # 6. Tear down
 make destroy target=azure
@@ -268,6 +287,8 @@ make destroy target=aws
 
 > Running costs approximately **$5–6/day**. The $200 Azure free trial credit covers ~30+ days of continuous use. Run `terraform destroy` between sessions to avoid idle Bastion charges.
 
+**Pay-as-you-go profile** (`terraform.tfvars.payg.example`): swaps Bastion to Standard SKU with native client + IP-based connect enabled, and bumps log retention to 90 days. Adds roughly **~$0.05–0.15/hr** on top of the Basic SKU cost — see [Azure Bastion pricing](https://azure.microsoft.com/en-us/pricing/details/azure-bastion/) for current rates — plus a small increase in Log Analytics ingestion/retention cost.
+
 ### AWS
 
 | Resource | Free Tier | Cost after free tier |
@@ -280,6 +301,8 @@ make destroy target=aws
 | SSM Session Manager | Always free | Free |
 
 > AWS lab costs are **near zero** within Free Tier limits. Set a $5/month billing alert in AWS Budgets and run `terraform destroy` after each session. If using GuardDuty or Security Hub, destroy before day 30 on new accounts.
+
+*(A pay-as-you-go tfvars profile for AWS — GuardDuty + Security Hub on by default — is in progress and not yet available.)*
 
 ---
 
