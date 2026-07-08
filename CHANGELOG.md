@@ -1,5 +1,13 @@
 ## Changelog
 
+### v2.1.0 (2026-07-08)
+- Added `terraform.tfvars.payg.example` for `environments/azure` — a pay-as-you-go profile (Standard Bastion SKU, 90-day log retention) alongside the existing free-trial-oriented example
+- Exposed `bastion_sku` as an `environments/azure` variable (was hardcoded to the module default)
+- Fixed `modules/azure/bastion` to explicitly set `tunneling_enabled` / `ip_connect_enabled` on Standard/Premium SKU — selecting the SKU alone doesn't turn on native-client support, found via live deploy testing of the PAYG profile
+- Documented the Azure trial vs. pay-as-you-go tfvars profiles and their cost delta in `README.md`
+- Live-verified end-to-end: Azure PAYG profile deploys, native client Bastion SSH (`az network bastion ssh`) connects, hardening and Sentinel log ingestion confirmed
+- AWS pay-as-you-go profile is in progress, kept local pending testing
+
 ### v2.0.0 (2026-03-14)
 - Added AWS multi-cloud support alongside existing Azure deployment
 - New `modules/aws/` with network, compute, bastion, and monitoring submodules

@@ -59,6 +59,7 @@ module "bastion" {
   location            = var.location
   resource_group_name = module.resource_group.name
   bastion_subnet_id   = module.network.bastion_subnet_id
+  bastion_sku         = var.bastion_sku
   tags                = local.common_tags
 }
 

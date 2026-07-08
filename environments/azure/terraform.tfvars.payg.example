@@ -1,9 +1,10 @@
 # ─────────────────────────────────────────────────────────────────────────────
-# Azure SOC Terraform — Example Variable Values (Free Trial profile)
+# Azure SOC Terraform — Example Variable Values (Pay-As-You-Go profile)
 #
-# Tuned for a new account still running on free trial credit: lowest-cost
-# Bastion SKU, minimum log retention. On a fully-activated pay-as-you-go
-# subscription? See terraform.tfvars.payg.example instead.
+# Tuned for a fully-activated pay-as-you-go subscription that isn't trying to
+# stretch free trial credit: Standard-SKU Bastion, longer log retention. On a
+# brand-new account still running on free trial credit? See
+# terraform.tfvars.example instead.
 #
 # Copy this file to terraform.tfvars and fill in your real values.
 # terraform.tfvars is git-ignored to prevent committing secrets.
@@ -30,13 +31,15 @@ management_subnet_cidr = "10.0.1.0/24"
 workload_subnet_cidr   = "10.0.2.0/24"
 bastion_subnet_cidr    = "10.0.3.0/26" # Minimum /26 required by Azure Bastion
 
-# Basic SKU is the lowest-cost Bastion tier — good fit while on free trial credit.
-bastion_sku = "Basic"
+# Standard SKU adds native client (az network bastion ssh/rdp), IP-based
+# connection, and file copy — worth the extra cost when not preserving trial
+# credit. See: https://learn.microsoft.com/en-us/azure/bastion/configuration-settings#skus
+bastion_sku = "Standard"
 
 # ── Compute ──────────────────────────────────────────────────────────────────
 
-# Azure free trial and some PAYG subscriptions have B-series capacity restrictions.
-# If you see "SkuNotAvailable", use Standard_D2s_v3 as a reliable fallback.
+# Some regions have B-series VM capacity restrictions regardless of subscription
+# type. If you see "SkuNotAvailable", use Standard_D2s_v3 as a reliable fallback.
 # Upgrade to Standard_D2s_v5 for heavier workloads.
 vm_size        = "Standard_B2s"
 admin_username = "azureadmin"
@@ -47,8 +50,9 @@ admin_ssh_public_key = "ssh-rsa AAAA...your-public-key-here... user@host"
 
 # ── Monitoring ───────────────────────────────────────────────────────────────
 
-# 30 days is the minimum and is free-tier eligible.
-log_retention_days = 30
+# Longer retention than the free-trial profile — PAYG accounts don't need to
+# hug the free-tier retention floor to control cost.
+log_retention_days = 90
 
 # ── Extra Tags ───────────────────────────────────────────────────────────────
 

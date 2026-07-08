@@ -62,6 +62,17 @@ variable "bastion_subnet_cidr" {
   default     = "10.0.3.0/26"
 }
 
+variable "bastion_sku" {
+  description = "SKU of the Azure Bastion host. 'Basic' is lowest cost; 'Standard' adds features like native client support and file copy."
+  type        = string
+  default     = "Basic"
+
+  validation {
+    condition     = contains(["Basic", "Standard", "Premium"], var.bastion_sku)
+    error_message = "bastion_sku must be one of: Basic, Standard, Premium."
+  }
+}
+
 # ─── Compute ─────────────────────────────────────────────────────────────────
 
 variable "vm_size" {

@@ -21,6 +21,12 @@ resource "azurerm_bastion_host" "this" {
   sku                 = var.bastion_sku
   tags                = var.tags
 
+  # Native client (az network bastion ssh/rdp) and IP-based connect require
+  # Standard/Premium SKU *and* these flags explicitly enabled — the SKU alone
+  # doesn't turn them on. Basic SKU doesn't support either, so both stay false.
+  tunneling_enabled  = var.bastion_sku != "Basic"
+  ip_connect_enabled = var.bastion_sku != "Basic"
+
   ip_configuration {
     name                 = "bastion-ip-config"
     subnet_id            = var.bastion_subnet_id
