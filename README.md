@@ -357,14 +357,13 @@ multi-cloud-soc-terraform/
 
 ---
 
-## Contributing
+## Roadmap
 
-Pull requests welcome. Useful areas for contribution:
-
-- Additional KQL detection rules mapped to MITRE ATT&CK
-- AWS CloudWatch metric alarms for GuardDuty finding severity
-- Terraform remote state configuration (Azure Blob / S3 backend)
-- Additional attack simulation playbooks
+- [ ] AWS pay-as-you-go tfvars profile (GuardDuty + Security Hub on by default) — in progress, pending live test
+- [ ] Additional KQL detection rules mapped to MITRE ATT&CK
+- [ ] AWS CloudWatch metric alarms for GuardDuty finding severity
+- [ ] Terraform remote state configuration (Azure Blob / S3 backend)
+- [ ] Additional attack simulation playbooks
 
 ---
 
